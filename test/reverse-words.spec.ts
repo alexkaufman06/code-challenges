@@ -1,6 +1,6 @@
 import { reverseWords } from '../src/reverse-words';
 
-describe('Event Broker Service Tests', () => {
+describe('Reverse Words Tests', () => {
     it('Should return each word reversed', function () {
         expect(reverseWords('a b c d')).toEqual('a b c d');
         expect(reverseWords('The quick brown fox jumps over the lazy dog.')).toEqual('ehT kciuq nworb xof spmuj revo eht yzal .god');
