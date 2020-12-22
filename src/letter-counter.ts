@@ -1,7 +1,7 @@
-export function letterCounter(string: string): string {
-    let lowercaseString = string.toLowerCase().replace(/ /g, '');
-    let obj: any = {};
-    let str = '';
+export function letterCounter(input: string): string {
+    let lowercaseString = input.toLowerCase().replace(/ /g, '');
+    let obj: {[property: string]: string } = {};
+    let answer = '';
 
     for (let letter of lowercaseString) {
         if (!(letter in obj)) {
@@ -12,8 +12,8 @@ export function letterCounter(string: string): string {
     }
 
     for (let key in obj) {
-        str += key + ':' + obj[key] + ',';
+        answer += key + ':' + obj[key] + ',';
     }
 
-    return str.substring(0, str.length - 1);
+    return answer.substring(0, answer.length - 1);
 };
