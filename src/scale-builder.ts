@@ -42,18 +42,18 @@ export class ScaleBuilder {
 export function getNoteFromInterval(note: string, interval: string): string {
     const isSharpKey = sharpKeys.includes(note);
     if (isSharpKey) {
-        const position = sharpTones.indexOf(note);
-        let intervalPosition = position + intervalValues[interval];
-        if (intervalPosition > sharpTones.length - 1) {
-            intervalPosition -= sharpTones.length;
-        }
-        return sharpTones[intervalPosition];
+        return getNote(note, interval, sharpTones);
     } else {
-        const position = flatTones.indexOf(note);
-        let intervalPosition = position + intervalValues[interval];
-        if (intervalPosition > flatTones.length -1) {
-            intervalPosition -= flatTones.length;
-        }
-        return flatTones[intervalPosition];
+        return getNote(note, interval, flatTones);
     }
 };
+
+// private below?
+function getNote(note: string, interval: string, tones: string[]) {
+    const position = tones.indexOf(note);
+    let intervalPosition = position + intervalValues[interval];
+    if (intervalPosition > tones.length - 1) {
+        intervalPosition -= tones.length;
+    }
+    return tones[intervalPosition];
+}
