@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && npx jest"
+    "test": "npm run build && npx jest --coverage"
   },
   "author": "Alex Kaufman",
   "license": "ISC",

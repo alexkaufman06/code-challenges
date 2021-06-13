@@ -25,6 +25,26 @@ const intervalValues: {[key: string]: number} = {
     '8P': 12
 };
 
+class IntervalBuilder {
+    static getNoteFromInterval(note: string, interval: string): string {
+        const isSharpKey = sharpKeys.includes(note);
+        if (isSharpKey) {
+            return this.getNote(note, interval, sharpTones);
+        } else {
+            return this.getNote(note, interval, flatTones);
+        }
+    }
+
+    private static getNote(note: string, interval: string, tones: string[]) {
+        const position = tones.indexOf(note);
+        let intervalPosition = position + intervalValues[interval];
+        if (intervalPosition > tones.length - 1) {
+            intervalPosition -= tones.length;
+        }
+        return tones[intervalPosition];
+    }
+}
+
 export class ScaleBuilder {
     static majorScale(noteName: noteNames, accidental?: accidentalOptions): string[] {
         let majorScale: string[] = [];
@@ -32,28 +52,10 @@ export class ScaleBuilder {
         const note = noteName + accidental;
         majorScalePattern.forEach(interval => {
             majorScale.push(
-                getNoteFromInterval(note, interval)
+                IntervalBuilder.getNoteFromInterval(note, interval)
             );
         });
         return majorScale;
     }
 }
 
-export function getNoteFromInterval(note: string, interval: string): string {
-    const isSharpKey = sharpKeys.includes(note);
-    if (isSharpKey) {
-        return getNote(note, interval, sharpTones);
-    } else {
-        return getNote(note, interval, flatTones);
-    }
-};
-
-// private below?
-function getNote(note: string, interval: string, tones: string[]) {
-    const position = tones.indexOf(note);
-    let intervalPosition = position + intervalValues[interval];
-    if (intervalPosition > tones.length - 1) {
-        intervalPosition -= tones.length;
-    }
-    return tones[intervalPosition];
-}
