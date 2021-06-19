@@ -24,24 +24,35 @@ const intervalValues: {[key: string]: number} = {
     '7M': 11,
     '8P': 12
 };
+const enharmonicEquivalents: {[key: string]: string} = {
+    'B': 'Cb'
+};
 
 class IntervalBuilder {
-    static getNoteFromInterval(note: string, interval: string): string {
-        const isSharpKey = sharpKeys.includes(note);
+    static getNoteFromInterval(note: string, interval: string, previousNote: string | undefined): string {
+        const isSharpKey = sharpKeys.includes(note) || note[1] === '#';
         if (isSharpKey) {
-            return this.getNote(note, interval, sharpTones);
+            return this.getNote(note, interval, sharpTones, previousNote);
         } else {
-            return this.getNote(note, interval, flatTones);
+            return this.getNote(note, interval, flatTones, previousNote);
         }
     }
 
-    private static getNote(note: string, interval: string, tones: string[]) {
+    private static getNote(note: string, interval: string, tones: string[], previousNote: string | undefined) {
         const position = tones.indexOf(note);
         let intervalPosition = position + intervalValues[interval];
         if (intervalPosition > tones.length - 1) {
             intervalPosition -= tones.length;
         }
-        return tones[intervalPosition];
+        return this.handleEnharmonicEquivalents(tones[intervalPosition], previousNote);
+    }
+
+    private static handleEnharmonicEquivalents(note: string, previousNote: string | undefined): string {
+        if (!previousNote || note[0] !== previousNote[0]) {
+            return note;
+        } else {
+            return enharmonicEquivalents[note];
+        }
     }
 }
 
@@ -51,8 +62,9 @@ export class ScaleBuilder {
         if (!accidental) accidental = '';
         const note = noteName + accidental;
         majorScalePattern.forEach(interval => {
+            const previousNote = majorScale[majorScale.length - 1];
             majorScale.push(
-                IntervalBuilder.getNoteFromInterval(note, interval)
+                IntervalBuilder.getNoteFromInterval(note, interval, previousNote)
             );
         });
         return majorScale;

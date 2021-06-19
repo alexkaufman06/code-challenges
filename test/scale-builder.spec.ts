@@ -54,6 +54,13 @@ describe('Scale Builder Tests', () => {
                     'B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#', 'B'
                 ]);
             });
+
+            // TODO: Improve Handling of Enharmonic Equivalents
+            // it('returns the C# major scale', function() {
+            //    expect(ScaleBuilder.majorScale('C', '#')).toEqual([
+            //        'C'
+            //    ]);
+            // });
         });
 
         describe('Flat Keys', () => {
@@ -87,11 +94,11 @@ describe('Scale Builder Tests', () => {
                 ]);
             });
 
-            // it('returns the Gb major scale', function () {
-            //     expect(ScaleBuilder.majorScale('G', 'b')).toEqual([
-            //         'Gb', 'Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'Gb'
-            //     ]);
-            // });
+            it('returns the Gb major scale', function () {
+                expect(ScaleBuilder.majorScale('G', 'b')).toEqual([
+                    'Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F', 'Gb'
+                ]);
+            });
         });
     });
 });
