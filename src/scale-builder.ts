@@ -4,8 +4,41 @@ type flat = 'b';
 type natural = '';
 type accidentalOptions = sharp | flat | natural;
 // type accidentals = '#' | 'b' | 'x' | 'bb' | '';
-const naturalNotes = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-const majorScalePattern = ['1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P'];
+// const sharpTones: string[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+// const flatTones: string[] = ['A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab'];
+// const sharpKeys: string[] = ['A', 'B', 'D', 'E', 'F#', 'G'];
+// const flatKeys: string[] = ['B', 'Bb', 'F'];
+const naturalNotes: string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+const majorScalePattern: string[] = ['1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P'];
+const enharmonicEquivalentTones: string[][] = [
+    ['C', 'B#, Dbb'],
+    ['C#', 'Bx', 'Db'],
+    ['D', 'Cx', 'Ebb'],
+    ['D#', 'Eb', 'Fbb'],
+    ['E', 'Dx', 'Fb'],
+    ['F', 'E#', 'Gbb'],
+    ['F#', 'Ex', 'Gb'],
+    ['G', 'Fx', 'Abb'],
+    ['G#', 'Ab'],
+    ['A', 'Gx', 'Bbb'],
+    ['A#', 'Bb', 'Cbb'],
+    ['B', 'Ax', 'Cb']
+];
+const intervalStepValues: {[key: string]: number} = {
+    '1P': 0,
+    '2m': 1,
+    '2M': 2,
+    '3m': 3,
+    '3M': 4,
+    '4P': 5,
+    '5d': 6,
+    '5P': 7,
+    '6m': 8,
+    '6M': 9,
+    '7m': 10,
+    '7M': 11,
+    '8P': 12
+};
 
 class IntervalBuilder {
     static getNoteFromInterval(key: string, interval: string): string {
@@ -18,6 +51,7 @@ class IntervalBuilder {
 
         switch (interval) {
             case '1P':
+            case '8P':
                 if (key[1]) {
                     return newNote + key[1];
                 }
@@ -71,11 +105,6 @@ class IntervalBuilder {
                 } else {
                     return newNote + '#';
                 }
-            case '8P':
-                if (key[1]) {
-                    return newNote + key[1];
-                }
-                break;
             default:
                 break;
         }
