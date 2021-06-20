@@ -1,14 +1,15 @@
-type noteNames = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
-type sharp = '#';
-type flat = 'b';
-type natural = '';
-type accidentalOptions = sharp | flat | natural;
-// type accidentals = '#' | 'b' | 'x' | 'bb' | '';
-// const sharpTones: string[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
-// const flatTones: string[] = ['A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab'];
-// const sharpKeys: string[] = ['A', 'B', 'D', 'E', 'F#', 'G'];
-// const flatKeys: string[] = ['B', 'Bb', 'F'];
-const naturalNotes: string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+type NaturalNotes = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
+type Sharp = '#';
+type DoubleSharp = 'x';
+type Flat = 'b';
+type DoubleFlat = 'bb'
+type Natural = '' | undefined;
+type AccidentalOptions = Sharp | Flat | Natural | DoubleSharp | DoubleFlat;
+type Note = {
+    name: NaturalNotes
+    accidental?: AccidentalOptions
+};
+const naturalNotes: NaturalNotes[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 const majorScalePattern: string[] = ['1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P'];
 const enharmonicEquivalentTones: string[][] = [
     ['C', 'B#, Dbb'],
@@ -42,7 +43,7 @@ const intervalStepValues: {[key: string]: number} = {
 
 class IntervalBuilder {
     static getNoteFromInterval(key: string, interval: string): string {
-        const position = naturalNotes.indexOf(key[0]);
+        const position = naturalNotes.indexOf(key[0] as NaturalNotes);
         let intervalPosition = position + Number(interval[0]) - 1;
         if (intervalPosition > naturalNotes.length - 1) {
             intervalPosition -= naturalNotes.length;
@@ -113,10 +114,14 @@ class IntervalBuilder {
 }
 
 export class ScaleBuilder {
-    static majorScale(noteName: noteNames, accidental?: accidentalOptions): string[] {
+    static majorScale(note: Note): string[] {
         let majorScale: string[] = [];
-        if (!accidental) accidental = '';
-        const key = noteName + accidental;
+        let key: string;
+        if (note.accidental) {
+            key = note.name + note.accidental;
+        } else {
+            key = note.name;
+        }
         majorScalePattern.forEach(interval => {
             majorScale.push(
                 IntervalBuilder.getNoteFromInterval(key, interval)
