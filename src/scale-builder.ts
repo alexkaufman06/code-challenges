@@ -40,73 +40,28 @@ const intervalStepValues: {[key: string]: number} = {
 
 class IntervalBuilder {
     static getNoteFromInterval(key: Note, interval: string): Note {
-        const position = naturalNotes.indexOf(key[0] as NaturalNotes);
-        let intervalPosition = position + Number(interval[0]) - 1;
+        const naturalNotePosition = naturalNotes.indexOf(key[0] as NaturalNotes);
+        let intervalPosition = naturalNotePosition + Number(interval[0]) - 1;
         if (intervalPosition > naturalNotes.length - 1) {
             intervalPosition -= naturalNotes.length;
         }
-        const newNote = naturalNotes[intervalPosition];
+        let newNote: Note = naturalNotes[intervalPosition];
+        enharmonicEquivalentTones.forEach(enharmonicArray => {
+           if (enharmonicArray.indexOf(key) !== -1 && key === enharmonicArray[enharmonicArray.indexOf(key)]) {
+               const enharmonicEquivalentPosition = enharmonicEquivalentTones.indexOf(enharmonicArray);
+               let enharmonicIntervalPosition = enharmonicEquivalentPosition + intervalStepValues[interval];
+               if (enharmonicIntervalPosition > enharmonicEquivalentTones.length - 1) {
+                   enharmonicIntervalPosition -= enharmonicEquivalentTones.length;
+               }
+               enharmonicEquivalentTones[enharmonicIntervalPosition].forEach(note => {
+                   if (note.includes(newNote)) {
+                       newNote = note;
+                   }
+               });
+           }
+        });
 
-        switch (interval) {
-            case '1P':
-            case '8P':
-                if (key[1]) {
-                    return newNote + key[1] as Note;
-                }
-                break;
-            case '2M':
-                if (key === 'E' || key === 'B' || key[1] === '#') {
-                    return newNote + '#' as Note;
-                } else if (key === 'Ab' || key === 'Db' || key === 'Gb') {
-                    return newNote + 'b' as Note;
-                } else {
-                    return newNote as Note;
-                }
-            case '3M':
-                if (key[1] && key !== 'Bb' && key !== 'Eb' && key !== 'Ab' && key !== 'Db') {
-                    return newNote + key[1] as Note;
-                } else if (newNote === 'B' || newNote === 'E' || key === 'F' || key === 'Bb' || key === 'Eb' || key === 'Ab' || key === 'Db') {
-                    return newNote as Note;
-                } else {
-                    return newNote + '#' as Note;
-                }
-                break;
-            case '4P':
-                if (key[1]) {
-                    return newNote + key[1] as Note;
-                } else if (key === 'F') {
-                    return newNote + 'b' as Note;
-                }
-                return newNote as Note;
-            case '5P':
-                if (key === 'B' || key === 'C#') {
-                    return newNote + '#' as Note;
-                } else if (key[1] === "b" && key !== 'Bb') {
-                    return newNote + 'b' as Note;
-                }
-                return newNote as Note;
-            case '6M':
-                if (key === 'Db' || key === 'Gb') {
-                    return newNote + key[1] as Note;
-                } else if (newNote === 'B' || newNote === 'E' || key === 'C' || key === 'F' || key === 'Bb' || key === 'Eb' || key === 'Ab') {
-                    return newNote as Note;
-                } else if (key[1]) {
-                    return newNote + key[1] as Note;
-                } else {
-                    return newNote + '#' as Note;
-                }
-            case '7M':
-                if (key === 'C#') {
-                    return newNote + '#' as Note;
-                } else if (newNote === 'B' || newNote === 'E' || key === 'Bb' || key === 'Eb' || key === 'Ab' || key === 'Db' || key === 'Gb') {
-                    return newNote as Note;
-                } else {
-                    return newNote + '#' as Note;
-                }
-            default:
-                break;
-        }
-        return newNote as Note;
+        return newNote;
     }
 }
 
