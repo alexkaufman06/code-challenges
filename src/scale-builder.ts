@@ -6,8 +6,9 @@ type DoubleFlat = 'bb'
 type Natural = '';
 type AccidentalOptions = Sharp | Flat | Natural | DoubleSharp | DoubleFlat;
 type Note = `${NaturalNotes}${AccidentalOptions}`;
+type Interval = '1P' | '2m' | '2M' | '3m' | '3M' | '4P' | '5d' | '5P' | '6m' | '6M' | '7m' | '7M' | '8P';
 const naturalNotes: NaturalNotes[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-const majorScalePattern: string[] = ['1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P'];
+const majorScalePattern: Interval[] = ['1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P'];
 const enharmonicEquivalentTones: Note[][] = [
     ['C', 'B#', 'Dbb'],
     ['C#', 'Bx', 'Db'],
@@ -22,7 +23,7 @@ const enharmonicEquivalentTones: Note[][] = [
     ['A#', 'Bb', 'Cbb'],
     ['B', 'Ax', 'Cb']
 ];
-const intervalStepValues: {[key: string]: number} = {
+const intervalStepValues: {[key in Interval]: number} = {
     '1P': 0,
     '2m': 1,
     '2M': 2,
@@ -39,7 +40,7 @@ const intervalStepValues: {[key: string]: number} = {
 };
 
 class IntervalBuilder {
-    static getNoteFromInterval(key: Note, interval: string): Note {
+    static getNoteFromInterval(key: Note, interval: Interval): Note {
         const naturalNotePosition = naturalNotes.indexOf(key[0] as NaturalNotes);
         let intervalPosition = naturalNotePosition + Number(interval[0]) - 1;
         if (intervalPosition > naturalNotes.length - 1) {
