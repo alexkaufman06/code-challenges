@@ -1,15 +1,28 @@
-type noteNames = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
-type sharp = '#';
-type flat = 'b';
-type natural = '';
-type accidentalOptions = sharp | flat | natural;
-// type accidentals = '#' | 'b' | 'x' | 'bb' | '';
-const sharpTones = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
-const flatTones = ['A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab'];
-const sharpKeys = ['A', 'B', 'C', 'D', 'E', 'F#', 'G']; // C is included here even though it has no sharps/flats
-const flatKeys = ['B', 'Bb', 'F'];
-const majorScalePattern = ['1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P'];
-const intervalValues: {[key: string]: number} = {
+type NaturalNotes = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
+type Sharp = '#';
+type DoubleSharp = 'x';
+type Flat = 'b';
+type DoubleFlat = 'bb'
+type Natural = '';
+type AccidentalOptions = Sharp | Flat | Natural | DoubleSharp | DoubleFlat;
+type Note = `${NaturalNotes}${AccidentalOptions}`;
+const naturalNotes: NaturalNotes[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+const majorScalePattern: string[] = ['1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P'];
+const enharmonicEquivalentTones: Note[][] = [
+    ['C', 'B#', 'Dbb'],
+    ['C#', 'Bx', 'Db'],
+    ['D', 'Cx', 'Ebb'],
+    ['D#', 'Eb', 'Fbb'],
+    ['E', 'Dx', 'Fb'],
+    ['F', 'E#', 'Gbb'],
+    ['F#', 'Ex', 'Gb'],
+    ['G', 'Fx', 'Abb'],
+    ['G#', 'Ab'],
+    ['A', 'Gx', 'Bbb'],
+    ['A#', 'Bb', 'Cbb'],
+    ['B', 'Ax', 'Cb']
+];
+const intervalStepValues: {[key: string]: number} = {
     '1P': 0,
     '2m': 1,
     '2M': 2,
@@ -24,47 +37,40 @@ const intervalValues: {[key: string]: number} = {
     '7M': 11,
     '8P': 12
 };
-const enharmonicEquivalents: {[key: string]: string} = {
-    'B': 'Cb'
-};
 
 class IntervalBuilder {
-    static getNoteFromInterval(note: string, interval: string, previousNote: string | undefined): string {
-        const isSharpKey = sharpKeys.includes(note) || note[1] === '#';
-        if (isSharpKey) {
-            return this.getNote(note, interval, sharpTones, previousNote);
-        } else {
-            return this.getNote(note, interval, flatTones, previousNote);
+    static getNoteFromInterval(key: Note, interval: string): Note {
+        const naturalNotePosition = naturalNotes.indexOf(key[0] as NaturalNotes);
+        let intervalPosition = naturalNotePosition + Number(interval[0]) - 1;
+        if (intervalPosition > naturalNotes.length - 1) {
+            intervalPosition -= naturalNotes.length;
         }
-    }
+        let newNote: Note = naturalNotes[intervalPosition];
+        enharmonicEquivalentTones.forEach(enharmonicArray => {
+           if (enharmonicArray.indexOf(key) !== -1 && key === enharmonicArray[enharmonicArray.indexOf(key)]) {
+               const enharmonicEquivalentPosition = enharmonicEquivalentTones.indexOf(enharmonicArray);
+               let enharmonicIntervalPosition = enharmonicEquivalentPosition + intervalStepValues[interval];
+               if (enharmonicIntervalPosition > enharmonicEquivalentTones.length - 1) {
+                   enharmonicIntervalPosition -= enharmonicEquivalentTones.length;
+               }
+               enharmonicEquivalentTones[enharmonicIntervalPosition].forEach(note => {
+                   if (note.includes(newNote)) {
+                       newNote = note;
+                   }
+               });
+           }
+        });
 
-    private static getNote(note: string, interval: string, tones: string[], previousNote: string | undefined) {
-        const position = tones.indexOf(note);
-        let intervalPosition = position + intervalValues[interval];
-        if (intervalPosition > tones.length - 1) {
-            intervalPosition -= tones.length;
-        }
-        return this.handleEnharmonicEquivalents(tones[intervalPosition], previousNote);
-    }
-
-    private static handleEnharmonicEquivalents(note: string, previousNote: string | undefined): string {
-        if (!previousNote || note[0] !== previousNote[0]) {
-            return note;
-        } else {
-            return enharmonicEquivalents[note];
-        }
+        return newNote;
     }
 }
 
 export class ScaleBuilder {
-    static majorScale(noteName: noteNames, accidental?: accidentalOptions): string[] {
-        let majorScale: string[] = [];
-        if (!accidental) accidental = '';
-        const note = noteName + accidental;
+    static majorScale(note: Note): Note[] {
+        let majorScale: Note[] = [];
         majorScalePattern.forEach(interval => {
-            const previousNote = majorScale[majorScale.length - 1];
             majorScale.push(
-                IntervalBuilder.getNoteFromInterval(note, interval, previousNote)
+                IntervalBuilder.getNoteFromInterval(note, interval)
             );
         });
         return majorScale;

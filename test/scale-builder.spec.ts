@@ -11,11 +11,11 @@ describe('Scale Builder Tests', () => {
         });
 
         it('returns the flatted root note as the first note in the array', function () {
-            expect(ScaleBuilder.majorScale('B', 'b')[0]).toEqual('Bb');
+            expect(ScaleBuilder.majorScale('Bb')[0]).toEqual('Bb');
         });
 
         it('returns the sharp root note as the first note in the array', function () {
-            expect(ScaleBuilder.majorScale('F', '#')[0]).toEqual('F#');
+            expect(ScaleBuilder.majorScale('F#')[0]).toEqual('F#');
         });
 
         it('returns the C major scale', function () {
@@ -56,11 +56,11 @@ describe('Scale Builder Tests', () => {
             });
 
             // TODO: Improve Handling of Enharmonic Equivalents
-            // it('returns the C# major scale', function() {
-            //    expect(ScaleBuilder.majorScale('C', '#')).toEqual([
-            //        'C'
-            //    ]);
-            // });
+            it('returns the C# major scale', function() {
+               expect(ScaleBuilder.majorScale('C#')).toEqual([
+                   'C#', 'D#', 'E#', 'F#', 'G#', 'A#', 'B#', 'C#'
+               ]);
+            });
         });
 
         describe('Flat Keys', () => {
@@ -71,31 +71,31 @@ describe('Scale Builder Tests', () => {
             });
 
             it('returns the Bb major scale', function () {
-                expect(ScaleBuilder.majorScale('B', 'b')).toEqual([
+                expect(ScaleBuilder.majorScale('Bb')).toEqual([
                     'Bb', 'C', 'D', 'Eb', 'F', 'G', 'A', 'Bb'
                 ]);
             });
 
             it('returns the Eb major scale', function () {
-                expect(ScaleBuilder.majorScale('E', 'b')).toEqual([
+                expect(ScaleBuilder.majorScale('Eb')).toEqual([
                     'Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D', 'Eb'
                 ]);
             });
 
             it('returns the Ab major scale', function () {
-                expect(ScaleBuilder.majorScale('A', 'b')).toEqual([
+                expect(ScaleBuilder.majorScale('Ab')).toEqual([
                     'Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G', 'Ab'
                 ]);
             });
 
             it('returns the Db major scale', function () {
-                expect(ScaleBuilder.majorScale('D', 'b')).toEqual([
+                expect(ScaleBuilder.majorScale('Db')).toEqual([
                     'Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C', 'Db'
                 ]);
             });
 
             it('returns the Gb major scale', function () {
-                expect(ScaleBuilder.majorScale('G', 'b')).toEqual([
+                expect(ScaleBuilder.majorScale('Gb')).toEqual([
                     'Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F', 'Gb'
                 ]);
             });
